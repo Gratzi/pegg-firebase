@@ -11,6 +11,7 @@ ssl_options =
   requestCert: false
   rejectUnauthorized: false
 app.set 'port', process.env.PORT or 3000
+app.enable 'trust proxy'
 server = https.createServer(ssl_options, app).listen(
   app.get('port'), undefined, undefined, ->
     debug 'Express server listening on port ' + server.address().port
