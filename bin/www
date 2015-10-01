@@ -1,16 +1,8 @@
 #!/usr/bin/env coffee
 debug = require('debug')('pegg-firebase')
 http = require 'http'
-enforce = require 'express-sslify'
 
 app = require '../app'
-
-# NOTE from http://github.com/florianheinemann/express-sslify:
-# Please do not set this flag [to true] if you are not behind a proxy that is
-# setting this flag as such flags can be easily spoofed in a direct client/server
-# connection. [We use this for Heroku only, therefore]
-app.use enforce.HTTPS true
-# app.use enforce.HTTPS()
 
 app.set 'port', process.env.PORT or 3000
 
