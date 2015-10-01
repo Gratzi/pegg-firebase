@@ -21,7 +21,7 @@ router.get '/', (req, res) ->
 
 
 ### New Card Created ###
-router.post '/card', (req, res) ->
+router.post '/newCard', (req, res) ->
   validateClient req.body.secret
   req.body.secret = undefined
 
@@ -36,7 +36,7 @@ router.post '/card', (req, res) ->
   res.send msg
 
 ### New User Created ###
-router.get '/user', (req, res) ->
+router.get '/newUser', (req, res) ->
   validateClient req.body.secret
   req.body.secret = undefined
 
