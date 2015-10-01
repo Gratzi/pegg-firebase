@@ -37,7 +37,17 @@ router.post '/card', (req, res) ->
 
 ### New User Created ###
 router.get '/user', (req, res) ->
-  res.render 'index', title: 'Express'
+  validateClient req.body.secret
+  req.body.secret = undefined
+
+  for friendId in req.body.friends
+    firebase.child(friendId).child('newUser').update
+      "#{req.body.userId}":
+        dts: req.body.dts
+
+  msg = "submitting new user notification to firebase: "+ JSON.stringify req.body
+  log msg
+  res.send msg
 
 
 module.exports = router
