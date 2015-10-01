@@ -1,15 +1,19 @@
-express = require 'express'
-router = express.Router()
-Firebase = require 'firebase'
-FirebaseTokenGenerator = require 'firebase-token-generator'
+debug = require 'debug'
+log = debug 'app:log'
+error = debug 'app:error'
+fail = (msg) ->
+  error msg
+  throw new Error msg
 
-firebase = new Firebase 'https://pegg.firebaseio.com'
-tokenGenerator = new FirebaseTokenGenerator process.env.FIREBASE_SECRET
-token = tokenGenerator.createToken {uid: '18784545'}#, {admin: true, expires: 2272147200}
-console.log token
-firebase.authWithCustomToken token, (error, auth) =>
-  if error?
-    console.log error, auth
+express = require 'express'
+firebase = require '../lib/pegg-firebase-client'
+router = express.Router()
+
+validateClient = (secret) ->
+  if secret isnt CLIENT_SECRET
+    fail "invalid client secret, aborting"
+
+CLIENT_SECRET = process.env.CLIENT_SECRET or fail "cannot have an empty CLIENT_SECRET"
 
 ### GET home page. ###
 router.get '/', (req, res) ->
@@ -18,17 +22,18 @@ router.get '/', (req, res) ->
 
 ### New Card Created ###
 router.post '/card', (req, res) ->
-# req.body:
-#  userId: 'asdasd'
-#  friends: ['asd','qwe']
-#  cardId: '123123'
-#  dts: 'someDate'
+  validateClient req.body.secret
+  req.body.secret = undefined
 
   for friendId in req.body.friends
-    firebase.child("#{friendId}/created.json").update
+    firebase.child(friendId).child('created').update
       "#{req.body.cardId}":
         userId: req.body.userId
         dts: req.body.dts
+
+  msg = "submitting new card notification to firebase: "+ JSON.stringify req.body
+  log msg
+  res.send msg
 
 ### New User Created ###
 router.get '/user', (req, res) ->
