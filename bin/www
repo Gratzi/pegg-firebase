@@ -1,27 +1,20 @@
 #!/usr/bin/env coffee
 debug = require('debug')('pegg-firebase')
-fs = require 'fs'
-https = require 'https'
+http = require 'http'
 enforce = require 'express-sslify'
+
 app = require '../app'
 
-ssl_options =
-  key: process.env.SSL_SERVER_KEY
-  cert: process.env.SSL_SERVER_CRT
-  # passphrase: process.env.SSL_PASSPHRASE
-  ca: process.env.SSL_CA_CRT
-  requestCert: false
-  rejectUnauthorized: false
-
-# NOTE from https://github.com/florianheinemann/express-sslify:
+# NOTE from http://github.com/florianheinemann/express-sslify:
 # Please do not set this flag [to true] if you are not behind a proxy that is
 # setting this flag as such flags can be easily spoofed in a direct client/server
 # connection. [We use this for Heroku only, therefore]
-app.use enforce.HTTPS true
+# app.use enforce.HTTPS true
+app.use enforce.HTTPS()
 
 app.set 'port', process.env.PORT or 3000
 
-server = https.createServer(ssl_options, app).listen(
-  app.get('port'), undefined, undefined, ->
-    debug 'Express server listening on port ' + server.address().port
+http.createServer(app).listen(
+  app.get('port'), ->
+    debug 'Express server listening on port ' + app.get 'port'
 )
