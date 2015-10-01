@@ -1,0 +1,17 @@
+#!/usr/bin/env coffee
+debug = require('debug')('ssl-demo')
+app = require '../app'
+fs = require 'fs'
+https = require 'https'
+ssl_options =
+  key: process.env.SSL_SERVER_KEY
+  cert: process.env.SSL_SERVER_CRT
+  passphrase: process.env.SSL_PASSPHRASE
+  ca: process.env.SSL_CA_CRT
+  requestCert: false
+  rejectUnauthorized: false
+app.set 'port', process.env.PORT or 3000
+server = https.createServer(ssl_options, app).listen(
+  app.get('port'), undefined, undefined, ->
+    debug 'Express server listening on port ' + server.address().port
+)
