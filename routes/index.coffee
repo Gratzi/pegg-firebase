@@ -26,7 +26,7 @@ router.post '/card', (req, res) ->
   req.body.secret = undefined
 
   for friendId in req.body.friends
-    firebase.child(friendId).child('created').update
+    firebase.child(friendId).child('newCard').update
       "#{req.body.cardId}":
         userId: req.body.userId
         dts: req.body.dts
