@@ -1,8 +1,8 @@
 debug = require 'debug'
 log = debug 'app:log'
-error = debug 'app:error'
+errorLog = debug 'app:error'
 fail = (msg) ->
-  error msg
+  errorLog msg
   throw new Error msg
 
 Firebase = require 'firebase'
@@ -18,7 +18,7 @@ class PeggFirebaseClient extends Firebase
     token = tokenGenerator.createToken {uid: FIREBASE_UID}#, {admin: true, expires: 2272147200}
     @authWithCustomToken token, (error, auth) =>
       if error?
-        error error, auth
+        errorLog error, auth
       else
         log 'Login to Firebase successful'
 

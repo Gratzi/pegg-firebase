@@ -1,7 +1,7 @@
 #!/usr/bin/env coffee
 debug = require 'debug'
 log = debug 'app:log'
-error = debug 'app:error'
+errorLog = debug 'app:error'
 
 http = require 'http'
 app = require '../app'

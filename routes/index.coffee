@@ -1,8 +1,8 @@
 debug = require 'debug'
 log = debug 'app:log'
-error = debug 'app:error'
+errorLog = debug 'app:error'
 fail = (msg) ->
-  error msg
+  errorLog msg
   throw new Error msg
 
 express = require 'express'
