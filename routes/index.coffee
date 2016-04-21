@@ -41,9 +41,10 @@ router.post '/newUser', (req, res) ->
   req.body.secret = undefined
 
   for friendId in req.body.friends
-    firebase.child(friendId).child('newUser').update
-      "#{req.body.userId}":
+    firebase.child('notifications').child(friendId).add
         dts: req.body.dts
+        type: 'newUser'
+        friendId: req.body.userId
 
   msg = "submitting new user notification to firebase: "+ JSON.stringify req.body
   log msg
