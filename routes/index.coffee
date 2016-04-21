@@ -20,20 +20,20 @@ router.get '/', (req, res) ->
   res.render 'index', title: 'Express'
 
 
-### New Card Created ###
-router.post '/newCard', (req, res) ->
-  validateClient req.body.secret
-  req.body.secret = undefined
-
-  for friendId in req.body.friends
-    firebase.child(friendId).child('newCard').update
-      "#{req.body.cardId}":
-        userId: req.body.userId
-        dts: req.body.dts
-
-  msg = "submitting new card notification to firebase: "+ JSON.stringify req.body
-  log msg
-  res.send msg
+#### New Card Created ###
+#router.post '/newCard', (req, res) ->
+#  validateClient req.body.secret
+#  req.body.secret = undefined
+#
+#  for friendId in req.body.friends
+#    firebase.child(friendId).child('newCard').update
+#      "#{req.body.cardId}":
+#        userId: req.body.userId
+#        dts: req.body.dts
+#
+#  msg = "submitting new card notification to firebase: "+ JSON.stringify req.body
+#  log msg
+#  res.send msg
 
 ### New User Created ###
 router.post '/newUser', (req, res) ->
