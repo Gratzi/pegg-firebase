@@ -16,7 +16,7 @@ class PeggFirebaseClient extends Firebase
   constructor: ->
     super FIREBASE_URL
     tokenGenerator = new FirebaseTokenGenerator FIREBASE_SECRET
-    token = tokenGenerator.createToken {uid: FIREBASE_UID}#, {admin: true, expires: 2272147200}
+    token = tokenGenerator.createToken {uid: FIREBASE_UID} #, {admin: true, expires: 2272147200}
     @authWithCustomToken token, (error, auth) =>
       if error?
         errorLog error, auth
