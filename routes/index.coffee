@@ -43,8 +43,12 @@ router.post '/newUser', (req, res) ->
   for friendId in req.body.friends
     firebase.child('notifications').child(friendId).push
       dts: req.body.dts
-      type: 'newUser'
+      type: 'friendUpdate'
       friendId: req.body.userId
+  firebase.child('notifications').child(req.body.userId).push
+    dts: req.body.dts
+    type: 'friendUpdate'
+
 
   msg = "submitting new user notification to firebase: "+ JSON.stringify req.body
   log msg
