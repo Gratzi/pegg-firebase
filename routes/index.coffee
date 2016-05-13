@@ -31,7 +31,7 @@ router.get '/', (req, res) ->
 #    firebase.child(friendId).child('newCard').update
 #      "#{req.body.cardId}":
 #        userId: req.body.userId
-#        dts: req.body.dts
+#        timestamp: req.body.timestamp
 #
 #  msg = "submitting new card notification to firebase: "+ JSON.stringify req.body
 #  log msg
@@ -47,13 +47,13 @@ router.post '/newUser', (req, res) ->
 
   try
     for friendId in req.body.friends
-      firebase.child('inbound').child(friendId).push {
-        dts: req.body.dts
+      firebase.child("inbound/#{friendId}").push {
+        timestamp: req.body.timestamp
         type: 'friendsUpdate'
         friendId: req.body.userId
       }, (error) => fail error if error?
-    firebase.child('inbound').child(req.body.userId).push {
-      dts: req.body.dts
+    firebase.child("inbound/#{req.body.userId}").push {
+      timestamp: req.body.timestamp
       type: 'friendsUpdate'
     }, (error) => fail error if error?
     res.send msg
