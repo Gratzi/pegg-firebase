@@ -45,17 +45,19 @@ router.post '/newUser', (req, res) ->
   msg = "submitting new user notification to firebase: "+ JSON.stringify req.body
   log msg
 
-  for friendId in req.body.friends
-    firebase.child('inbound').child(friendId).push {
+  try
+    for friendId in req.body.friends
+      firebase.child('inbound').child(friendId).push {
+        dts: req.body.dts
+        type: 'friendsUpdate'
+        friendId: req.body.userId
+      }, (error) => fail error if error?
+    firebase.child('inbound').child(req.body.userId).push {
       dts: req.body.dts
       type: 'friendsUpdate'
-      friendId: req.body.userId
     }, (error) => fail error if error?
-  firebase.child('inbound').child(req.body.userId).push {
-    dts: req.body.dts
-    type: 'friendsUpdate'
-  }, (error) => fail error if error?
-
-  res.send msg
+    res.send msg
+  catch error
+    fail error
 
 module.exports = router
