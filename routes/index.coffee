@@ -1,9 +1,11 @@
 debug = require 'debug'
 log = debug 'app:log'
 errorLog = debug 'app:error'
-fail = (msg) ->
-  errorLog msg
-  throw new Error msg
+fail = (err) ->
+  if typeof err is 'string'
+    err = new Error err
+  errorLog err
+  throw err
 
 express = require 'express'
 firebase = require '../lib/pegg-firebase-client'
@@ -40,19 +42,20 @@ router.post '/newUser', (req, res) ->
   validateClient req.body.secret
   req.body.secret = undefined
 
+  msg = "submitting new user notification to firebase: "+ JSON.stringify req.body
+  log msg
+
   for friendId in req.body.friends
-    firebase.child('inbound').child(friendId).push
+    firebase.child('inbound').child(friendId).push {
       dts: req.body.dts
       type: 'friendsUpdate'
       friendId: req.body.userId
-  firebase.child('inbound').child(req.body.userId).push
+    }, (error) => fail error if error?
+  firebase.child('inbound').child(req.body.userId).push {
     dts: req.body.dts
     type: 'friendsUpdate'
+  }, (error) => fail error if error?
 
-
-  msg = "submitting new user notification to firebase: "+ JSON.stringify req.body
-  log msg
   res.send msg
-
 
 module.exports = router
